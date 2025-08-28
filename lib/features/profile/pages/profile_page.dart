@@ -14,6 +14,7 @@ import '../../../core/services/app_update_service.dart';
 import '../../../core/services/ad_service.dart';
 import '../../../shared/widgets/smooth_app_bar.dart';
 import '../../auth/pages/login_page.dart';
+import '../../../shared/widgets/app_logo.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -1290,8 +1291,8 @@ class _AboutBottomSheetState extends State<_AboutBottomSheet> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: 'अ',
-                                  style: GoogleFonts.poppins(
+                                  text: 'A',
+                                  style: GoogleFonts.raleway(
                                     fontSize: 32,
                                     fontWeight: FontWeight.w600,
                                     color: theme.colorScheme.primary,
@@ -1303,28 +1304,7 @@ class _AboutBottomSheetState extends State<_AboutBottomSheet> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'अहम्',
-                              style: GoogleFonts.poppins(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w600,
-                                color: theme.colorScheme.onSurface,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'AI',
-                              style: GoogleFonts.inter(
-                                fontSize: 26,
-                                fontWeight: FontWeight.w700,
-                                color: theme.colorScheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      const AppLogo(fontSize: 28),
                       const SizedBox(height: 4),
                       Text(
                         'Version $_currentVersion',
