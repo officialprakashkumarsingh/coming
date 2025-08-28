@@ -51,7 +51,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _showScrollToBottom = false;
   bool _userIsScrolling = false;
   bool _autoScrollEnabled = true;
-  bool _isLoadingHistory = false;
+  bool _isLoadingHistory = true;
   
   // For stopping streams
   Stream<String>? _currentStream;
@@ -90,40 +90,62 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _loadCurrentSession() async {
     final sessionId = ChatHistoryService.instance.currentSessionId;
     
-    if (!_isLoadingHistory) {
-      setState(() {
-        _isLoadingHistory = true;
-      });
+    setState(() {
+      _isLoadingHistory = true;
+    });
       
-      try {
-        if (sessionId != null) {
-          // Load messages for existing session
-          final messages = await ChatHistoryService.instance.loadSessionMessages(sessionId);
-          if (mounted) {
-            setState(() {
-              _messages.clear();
-              _messages.addAll(messages);
-              _isLoadingHistory = false;
-            });
-            
-            // Scroll to bottom after loading messages
+    try {
+      if (sessionId != null) {
+        // Load messages for existing session
+        final messages = await ChatHistoryService.instance.loadSessionMessages(sessionId);
+        if (mounted) {
+          // Animate the list changes
+          final oldMessages = List.of(_messages);
+
+          // Remove old items
+          for (int i = oldMessages.length - 1; i >= 0; i--) {
+            _messages.removeAt(i);
+            _listKey.currentState?.removeItem(
+              i,
+              (context, animation) => _buildAnimatedMessage(oldMessages[i], i, animation),
+              duration: const Duration(milliseconds: 100),
+            );
+          }
+
+          // Wait for removals to complete
+          await Future.delayed(Duration(milliseconds: 100 * oldMessages.length));
+
+          // Add new items
+          for (int i = 0; i < messages.length; i++) {
+            _messages.add(messages[i]);
+            _listKey.currentState?.insertItem(i, duration: const Duration(milliseconds: 100));
+          }
+
+          setState(() {
+            _isLoadingHistory = false;
+          });
+
+          // Scroll to bottom only if it's a new chat
+          if (messages.length <= 2) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (_scrollController.hasClients && _messages.isNotEmpty) {
                 _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
               }
             });
           }
-        } else {
-          // New session - clear messages
-          if (mounted) {
-            setState(() {
-              _messages.clear();
-              _isLoadingHistory = false;
-            });
-          }
         }
-      } catch (e) {
-        print('Error loading session messages: $e');
+      } else {
+        // New session - clear messages
+        if (mounted) {
+          setState(() {
+            _messages = [];
+            _isLoadingHistory = false;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error loading session messages: $e');
+      if (mounted) {
         setState(() {
           _isLoadingHistory = false;
         });

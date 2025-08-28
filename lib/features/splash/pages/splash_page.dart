@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../shared/widgets/app_logo.dart';
+import '../../../shared/widgets/animated_app_logo.dart';
 import '../../../theme/providers/theme_provider.dart';
 import '../../../core/services/model_service.dart';
 import '../../../core/services/maintenance_service.dart';
@@ -15,19 +15,10 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-
+class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1000), // User requested 1 second
-      vsync: this,
-    );
-    
-    _animationController.forward();
     _initializeApp();
   }
 
@@ -77,12 +68,6 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   }
 
   @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     // Use Theme.of(context) to ensure the splash screen respects the MaterialApp's theme.
     final theme = Theme.of(context);
@@ -90,14 +75,9 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     
     return Scaffold(
       backgroundColor: colorScheme.background,
-      body: Center(
-            child: FadeTransition(
-              opacity: _animationController,
-              child: const AppLogo(
-                fontSize: 48,
-              ),
-            ),
-          ),
+      body: const Center(
+        child: AnimatedAppLogo(),
+      ),
     );
   }
 }

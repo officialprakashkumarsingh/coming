@@ -7,6 +7,7 @@ import '../../../shared/widgets/smooth_button.dart';
 import '../../../shared/widgets/smooth_text_field.dart';
 import '../../main/pages/main_page.dart';
 import 'login_page.dart';
+import '../../../shared/widgets/app_logo.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -267,29 +268,8 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                         const SizedBox(height: 32),
                         
                         // App Name
-                        Center(
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'अहम्',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 36,
-                                    fontWeight: FontWeight.w600,
-                                    color: theme.colorScheme.onBackground,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 'AI',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 34,
-                                    fontWeight: FontWeight.w700,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        const Center(
+                          child: AppLogo(fontSize: 36),
                         ),
                         
                         const SizedBox(height: 12),
