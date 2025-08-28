@@ -12,6 +12,7 @@ import '../../chat/widgets/model_selector_sheet.dart';
 import '../../chat/widgets/chat_sidebar.dart';
 import '../../profile/pages/profile_page.dart';
 import '../../../shared/widgets/smooth_app_bar.dart';
+import '../../../shared/widgets/app_logo.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -148,30 +149,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'अहम्',
-                          style: GoogleFonts.poppins(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'AI',
-                          style: GoogleFonts.inter(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -0.5,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  const AppLogo(fontSize: 22),
                   const SizedBox(width: 4),
                   Icon(
                     Icons.keyboard_arrow_down,

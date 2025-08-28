@@ -1292,7 +1292,7 @@ class _AboutBottomSheetState extends State<_AboutBottomSheet> {
                               children: [
                                 TextSpan(
                                   text: 'A',
-                                  style: GoogleFonts.raleway(
+                                  style: GoogleFonts.quantico(
                                     fontSize: 32,
                                     fontWeight: FontWeight.w600,
                                     color: theme.colorScheme.primary,
