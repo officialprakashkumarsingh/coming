@@ -22,7 +22,6 @@ import '../../../core/models/quiz_message_model.dart';
 import '../../../core/models/vision_analysis_message_model.dart';
 import '../../../core/models/file_upload_message_model.dart';
 import '../../../core/services/diagram_service.dart';
-import '../../../core/services/web_search_service.dart';
 import '../../../core/services/chart_service.dart';
 import '../../../core/services/flashcard_service.dart';
 import '../../../core/services/quiz_service.dart';
@@ -760,63 +759,6 @@ class _ChatPageState extends State<ChatPage> {
 
             await _handleImageModelResponse(prompt, model, messageIndex, 1, 0);
 
-          } else if (functionName == 'web_search') {
-            final query = arguments['query'] as String;
-
-            // Update the "thinking" message to a "searching" message
-            setState(() {
-              _messages[messageIndex] = Message.assistant('Searching the web for: "$query"...', isStreaming: true);
-            });
-
-            try {
-              final searchResult = await WebSearchService.search(query);
-
-              // Replace the "searching" message with the results widget
-              setState(() {
-                _messages[messageIndex] = WebSearchMessage(
-                  id: 'web_search_${DateTime.now().millisecondsSinceEpoch}',
-                  query: query,
-                  searchResult: searchResult,
-                );
-              });
-
-              // Now, send the results back to the AI to get a summary
-              final newHistory = _messages.map((m) => m.toApiFormat()).toList().cast<Map<String, dynamic>>().toList();
-              final toolResultMessage = {
-                'role': 'tool',
-                'content': jsonEncode(searchResult), // Send the full results
-                'tool_call_id': toolCall['id'] as String,
-              };
-              newHistory.add(toolResultMessage);
-
-              final summaryStream = await ApiService.sendMessage(
-                message: '', // No new user message, just summarizing tool results
-                model: model,
-                conversationHistory: newHistory,
-              );
-
-              // Add a new message bubble for the AI's summary
-              final summaryMessage = Message.assistant('', isStreaming: true);
-              _addMessage(summaryMessage);
-              final summaryMessageIndex = _messages.length - 1;
-
-              String summaryContent = '';
-              await for (final summaryChunk in summaryStream) {
-                summaryContent += summaryChunk;
-                setState(() {
-                  _messages[summaryMessageIndex] = _messages[summaryMessageIndex].copyWith(content: summaryContent);
-                });
-              }
-              // Finalize the summary message
-              setState(() {
-                _messages[summaryMessageIndex] = _messages[summaryMessageIndex].copyWith(isStreaming: false);
-              });
-
-            } catch (e) {
-              setState(() {
-                _messages[messageIndex] = Message.error('Web search failed: ${e.toString()}');
-              });
-            }
           }
           // Since a tool was called, we break the loop for this model's response.
           break;
